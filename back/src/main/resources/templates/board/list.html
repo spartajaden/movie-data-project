@@ -1,0 +1,164 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>일별 박스오피스 - 영화 관리 시스템</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* 이미지와 동일한 박스오피스 다크 테마 스타일링 */
+      body {
+        background-color: #0b0d19;
+        color: #ffffff;
+        font-family: "Malgun Gothic", dotum, sans-serif;
+      }
+      .boxoffice-container {
+        background-color: #0b0d19;
+        padding: 30px 0;
+      }
+      .header-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 5px;
+      }
+      .header-date {
+        font-size: 0.85rem;
+        color: #a0a5b5;
+        text-align: right;
+      }
+      .table-boxoffice {
+        border-top: 1px solid #1f2438;
+        border-bottom: 1px solid #1f2438;
+      }
+      .table-boxoffice th {
+        background-color: #121624 !important;
+        color: #7a8299 !important;
+        font-weight: normal;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #1f2438 !important;
+        padding: 12px 10px;
+      }
+      .table-boxoffice td {
+        background-color: #0b0d19 !important;
+        color: #ffffff;
+        border-bottom: 1px solid #1f2438 !important;
+        padding: 16px 10px;
+        font-size: 0.95rem;
+      }
+      .rank-badge {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+      .rank-top {
+        background-color: #00c73c;
+        color: #ffffff;
+      }
+      .rank-normal {
+        color: #a0a5b5;
+      }
+      .movie-title-link {
+        color: #00c73c;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .movie-title-link:hover {
+        text-decoration: underline;
+      }
+      .text-highlight {
+        color: #00c73c;
+        font-weight: 500;
+      }
+      .text-muted-custom {
+        color: #a0a5b5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container boxoffice-container mt-4">
+      <div class="row align-items-end mb-3">
+        <div class="col-6">
+          <div class="header-title">일별 박스오피스</div>
+        </div>
+        <div class="col-6 text-end">
+          <div class="header-date">2023-12-17 기준</div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-boxoffice align-middle text-center">
+          <thead>
+            <tr>
+              <th style="width: 8%">순위</th>
+              <th class="text-start" style="width: 35%">영화명</th>
+              <th style="width: 15%">개봉일</th>
+              <th style="width: 12%">평점 (인기론)</th>
+              <th style="width: 15%">흥행 수익</th>
+              <th style="width: 15%">장르</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:if="${#lists.isEmpty(movies)}">
+              <td colspan="6" class="text-muted-custom py-5">
+                등록된 영화 데이터가 없습니다.
+              </td>
+            </tr>
+
+            <tr th:each="movie, stat : ${movies}">
+              <td>
+                <span
+                  th:classappend="${stat.count <= 3} ? 'rank-top' : 'rank-normal'"
+                  class="rank-badge"
+                  th:text="${stat.count}"
+                  >1</span
+                >
+              </td>
+              <td class="text-start">
+                <a
+                  th:href="@{/board/{id}(id=${movie.id})}"
+                  th:text="${movie.title}"
+                  class="movie-title-link"
+                  >The Shawshank Redemption</a
+                >
+              </td>
+              <td th:text="${movie.releaseDate}" class="text-muted-custom">
+                1994-09-23
+              </td>
+              <td>
+                <span class="text-highlight" th:text="${movie.voteAverage}"
+                  >9.3</span
+                >
+                <span
+                  class="text-muted-custom small"
+                  th:text="'(' + ${movie.popularity} + ')'"
+                  >(105.2)</span
+                >
+              </td>
+              <td
+                th:text="${#numbers.formatInteger(movie.revenue, 3, 'COMMA')} + ' $'"
+              >
+                16,000,000 $
+              </td>
+              <td
+                th:text="${#strings.listJoin(movie.genres, ', ')}"
+                class="text-muted-custom"
+              >
+                Drama
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
